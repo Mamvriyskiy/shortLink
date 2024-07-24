@@ -1,7 +1,11 @@
 package main
 
 import (
-
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/handler"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/service"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/repository"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src"
+	"fmt"
 )
 
 func main() {
@@ -23,22 +27,23 @@ func main() {
 		SSLMode: "disable",
 	})
 
+
 	if err != nil {
+		//fmt.Println("No connect")
 		//logger.Log("Error", "initCongig", "Error config DB:", err, "")
 		//TODO: error
 		return
 	}
 
 	fmt.Println("DB connect")
-	// repository := repository.NewRepository(db)
-	// services := service.NewService(repository)
-	// handler := handler.NewHandler(services)
+	repository := repository.NewRepository(db)
+	services := service.NewService(repository)
+	handlers := handler.NewHandler(services)
 
-	// _ = handler
-
-	srv := new(Server)
+	srv := new(src.Server)
 	if err := srv.Run("8000", handlers.InitRouters()); err != nil {
-		logger.Log("Error", "Run", "Error occurred while running http server:", err, "")
+		fmt.Println(err)
+		//logger.Log("Error", "Run", "Error occurred while running http server:", err, "")
 		return
 	}
 }

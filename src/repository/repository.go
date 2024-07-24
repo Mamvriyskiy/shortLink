@@ -2,14 +2,19 @@ package repository
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
 )
 
-type Repository struct {
-	//interface
+type LinkRepository interface {
+	AddLink(link structure.Link) (int, error)
 }
 
-func NewRepository(db *sqlx.DB) *repository {
-	return &Repository{
-		
+type Repository struct {
+	LinkRepository
+}
+
+func NewRepository(db *sqlx.DB) *Repository {
+	return &Repository {
+		LinkRepository: NewLinkPostgres(db),
 	}
 }

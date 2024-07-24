@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	
+
 	"github.com/jmoiron/sqlx"
 
 	// Импорт драйвера PostgreSQL для его регистрации.
@@ -33,7 +33,7 @@ func NewPostgresDB(cfg *Config) (*sqlx.DB, error) {
 		// logger.Log("Error", "Ping()", "Error check connection:", err, "")
 		// logger.Log("Error", " sqlx.Open", "Error connect DB:", err, "postgres", fmt.Sprintf(
 		// 	"host=%s port=%s user=%s dbname=%s password='' sslmode=%s",
-			cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.DBName, cfg.SSLMode))
+			//cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.DBName, cfg.SSLMode))
 		return nil, err
 	}
 
