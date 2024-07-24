@@ -29,10 +29,17 @@ func main() {
 		return
 	}
 
-	repository := repository.NewRepository(db)
-	services := service.NewService(repository)
-	handler := handler.NewHandler(services)
+	fmt.Println("DB connect")
+	// repository := repository.NewRepository(db)
+	// services := service.NewService(repository)
+	// handler := handler.NewHandler(services)
 
-	_ = handler
+	// _ = handler
+
+	srv := new(Server)
+	if err := srv.Run("8000", handlers.InitRouters()); err != nil {
+		logger.Log("Error", "Run", "Error occurred while running http server:", err, "")
+		return
+	}
 }
 
