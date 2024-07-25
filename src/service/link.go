@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/repository"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
 	"crypto/rand"
 	"math/big"
 	"net/url"
@@ -24,6 +25,7 @@ func NewLinkService(repository repository.LinkRepository) *LinkService {
 func isValidLink(link string) bool {
 	_, err := url.ParseRequestURI(link)
 	if err != nil {
+		logger.Log("Error", "url.ParseRequestURI(link)", "Error parse request url", err)
 		return false
 	}
 
@@ -43,7 +45,7 @@ func shortingLink() (string, error) {
 	for i := 0; i < sizeShortLink; i++ {
 		randomNumber, err := rand.Int(rand.Reader, maxInt)
 		if err != nil {
-			//TODO: log err
+			logger.Log("Error", "rand.Int(rand.Reader, maxInt)", "Error add random number", err)
 			return "", err
 		}
 
@@ -64,7 +66,7 @@ func (s *LinkService) CheckValidLink(link string) bool {
 func (s *LinkService) CreateShortLink(link structure.Link) (string, error) {
 	shortLink, err := shortingLink()
 	if err != nil {
-		//TODO: log err
+		logger.Log("Error", "shortingLink()", "Error create shortlink", err)
 		return "", err
 	}
 

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
 	"github.com/jmoiron/sqlx"
 	"fmt"
 )
@@ -33,6 +34,7 @@ func (l *LinkPostgres) CheckDuplicateShortLink(link string) (bool, error) {
 
 	err := l.db.Get(&flag, query, link)
 	if err != nil {
+		logger.Log("Error", "l.db.Get(&flag, query, link)", "Error get duplicatelink:", err)
 		return false, err
 	}
 
