@@ -7,7 +7,9 @@ import (
 
 type LinkServices interface {
 	CreateShortLink(link structure.Link) (string, error)
-	GetLongLink(link structure.Link) (string, error)
+	CheckValidLink(link string) bool
+	CheckDuplicateShortLink(link string) (bool, error)
+	AddLink(link structure.Link, userID int)(int, error)
 }
 
 type Services struct {

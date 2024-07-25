@@ -5,7 +5,7 @@ import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
 	"crypto/rand"
 	"math/big"
-	"fmt"
+	"net/url"
 )
 
 const (
@@ -21,7 +21,21 @@ func NewLinkService(repository repository.LinkRepository) *LinkService {
 	return &LinkService{repository: repository}
 }
 
-func shortingLink() string {
+func isValidLink(link string) bool {
+	_, err := url.ParseRequestURI(link)
+	if err != nil {
+		return false
+	}
+
+	u, err := url.Parse(link)
+	if err != nil || u.Host == "" {
+		return false
+	}
+
+	return true
+}
+
+func shortingLink() (string, error) {
 	str := make([]byte, 6)
 
 	maxInt := big.NewInt(int64(len(letter)))
@@ -36,7 +50,15 @@ func shortingLink() string {
 		str[i] = letter[int(randomNumber.Int64())]
 	}
 
-	return string(str)
+	return string(str), nil
+}
+
+func (s *LinkService) CheckValidLink(link string) bool {
+	if isValidLink(link) {
+		return true
+	}
+
+	return false
 }
 
 func (s *LinkService) CreateShortLink(link structure.Link) (string, error) {
@@ -45,11 +67,15 @@ func (s *LinkService) CreateShortLink(link structure.Link) (string, error) {
 		//TODO: log err
 		return "", err
 	}
-	//result, err = checkLink(shortLink)
 
-	return "", nil
+	return shortLink, nil
 }
 
-func (s * LinkService) GetLongLink(link structure.Link) (string, error) {
-	return "", err
+func (s * LinkService) CheckDuplicateShortLink(link string) (bool, error) {
+	return s.repository.CheckDuplicateShortLink(link)
 }
+
+func (s * LinkService) AddLink(link structure.Link, userID int) (int, error) {
+	linkID, err := s.repository.AddLink(link, userID)
+	return linkID, err
+}	

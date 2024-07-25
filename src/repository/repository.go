@@ -6,7 +6,8 @@ import (
 )
 
 type LinkRepository interface {
-	AddLink(link structure.Link) (int, error)
+	AddLink(link structure.Link, userID int) (int, error)
+	CheckDuplicateShortLink(link string) (bool, error)
 }
 
 type Repository struct {

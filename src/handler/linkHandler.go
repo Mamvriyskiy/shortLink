@@ -16,10 +16,33 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 		return
 	}
 
-    _, err := h.services.LinkServices.CreateShortLink(link)
-	if err != nil {
-		fmt.Println("error create short link")
+	fmt.Println("+")
+	for true {
+		result, err := h.services.LinkServices.CreateShortLink(link)
+		if err != nil {
+			fmt.Println("error create short link")
+		}
+
+		flag, err := h.services.CheckDuplicateShortLink(result)
+		if err != nil {
+			fmt.Println(err)
+			//TODO: error
+			return
+		}
+
+		if !flag {
+			link.ShortLink = result
+			break
+		}
 	}
+
+	linkID, err := h.services.AddLink(link, 1)
+	if err != nil {
+		fmt.Println(err)
+		//TODO: error
+	}
+
+	fmt.Println(link, linkID)
 
 	return
 }

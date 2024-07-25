@@ -23,6 +23,9 @@ func NewPostgresDB(cfg *Config) (*sqlx.DB, error) {
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.SSLMode))
 	if err != nil {
+		fmt.Println(fmt.Sprintf(
+				"host=%s port=%s user=%s dbname=%s password='' sslmode=%s",
+				cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.SSLMode))
 		// logger.Log("Error", " sqlx.Open", "Error connect DB:", err, "postgres", fmt.Sprintf(
 		// 	"host=%s port=%s user=%s dbname=%s password='' sslmode=%s",
 		// 	cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.SSLMode))
@@ -30,6 +33,9 @@ func NewPostgresDB(cfg *Config) (*sqlx.DB, error) {
 	}
 	err = db.Ping()
 	if err != nil {
+		fmt.Println(fmt.Sprintf(
+			"host=%s port=%s user=%s dbname=%s password='' sslmode=%s",
+			cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.SSLMode))
 		// logger.Log("Error", "Ping()", "Error check connection:", err, "")
 		// logger.Log("Error", " sqlx.Open", "Error connect DB:", err, "postgres", fmt.Sprintf(
 		// 	"host=%s port=%s user=%s dbname=%s password='' sslmode=%s",
