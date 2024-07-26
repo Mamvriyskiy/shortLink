@@ -4,8 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
+	"net/http"
 	"fmt"
 )
+
+func (h *Handler) GetLongLink(shortLink string) (string, error) {
+	return h.services.GetLongLink(shortLink)
+}
 
 func (h *Handler) CreateShortLink(c *gin.Context) {
 	var link structure.Link
@@ -15,11 +20,11 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("+")
+	var result string
 	for true {
-		result, err := h.services.LinkServices.CreateShortLink(link)
+		result, err := h.services.CreateShortLink(link)
 		if err != nil {
-			logger.Log("Error", "h.services.LinkServices.CreateShortLink(link)", "Error create shortlink:", err)
+			logger.Log("Error", "h.services.CreateShortLink(link)", "Error create shortlink:", err)
 		}
 
 		flag, err := h.services.CheckDuplicateShortLink(result)
@@ -34,6 +39,7 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 		}
 	}
 
+	result = "https://localhost:8000/" + result
 	//TODO: clinetID
 	linkID, err := h.services.AddLink(link, 1)
 	if err != nil {
@@ -41,6 +47,10 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 	}
 
 	fmt.Println(link, linkID)
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"shortlink": result,
+	})
 
 	return
 }

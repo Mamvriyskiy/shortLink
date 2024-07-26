@@ -55,6 +55,10 @@ func shortingLink() (string, error) {
 	return string(str), nil
 }
 
+func (s *LinkService) GetLongLink(shortLink string) (string, error) {
+	return s.repository.GetLongLink(shortLink)
+}
+
 func (s *LinkService) CheckValidLink(link string) bool {
 	if isValidLink(link) {
 		return true

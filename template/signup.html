@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="ru">
     <head>
+
     </head>
     <body>
-        <div>Hello World!</div>
+        <div>Hello world!</div>
         <button id="createLink">Добавтить пользователя</button>
         <script>
             document.getElementById('createLink').addEventListener('click', function() {
-            const longlink = prompt('Вставьте ссылку:');
-            if (longlink) {
+            const login = prompt('login:');
+            const mail = prompt('mail:');
+            const pswrd = prompt('pswrd:');
+            if (login && mail && pswrd) {
                 // jwt = localStorage.getItem('jwt');
                 // console.log('Token ' + jwt);
                 //'Authorization': 'Bearer ' + jwt
-                console.log(JSON.stringify({ longlink }))
-                fetch('/api/create/', {
+                console.log(JSON.stringify({ login, mail, pswrd }))
+                fetch('/api/sing-up/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         //'Authorization': jwt
                     },
-                    body: JSON.stringify({ longlink: longlink })
+                    body: JSON.stringify({ login: login, password: pswrd, email: mail })
                 })
                 .then(response => response.json())
                 .then(data => {

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/service"
+	"fmt"
 )
 
 type Handler struct {
@@ -17,16 +18,44 @@ func NewHandler(services *service.Services) *Handler {
 func (h *Handler) InitRouters() *gin.Engine {
 	router := gin.New()
 
-	// router.Static("/css", "./template/css")
-	// router.LoadHTMLGlob("template/*.html")
+	router.Static("/css", "./template/css")
+	router.LoadHTMLGlob("template/*.html")
 
-	app := router.Group("/app")
-	app.GET("/", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "menu.html", nil)
+	router.GET("/:path", func(c *gin.Context) {
+		currentURL := c.Param("path")
+		// fmt.Println(currentURL)
+		longLink, err := h.GetLongLink(currentURL)
+		if err != nil {
+			//TODO: error status
+			return
+		}
+		fmt.Println(longLink, currentURL, err)
+
+		c.Redirect(http.StatusFound, longLink)
+		return
 	})
 
+	app := router.Group("/app")
+	app.GET("/create", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.html", nil)
+	})
+
+	app.GET("/sign-up", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "signup.html", nil)
+	})
+
+	app.GET("/sign-in", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "signin.html", nil)
+	})
+	
+
+
 	api := router.Group("/api")
-	api.GET("/create", h.CreateShortLink)
+	api.POST("/create", h.CreateShortLink)
+	api.POST("/sing-up", h.RegisterUser)
+	api.POST("/singin", h.GetUser)
+
+	
 
 	return router
 }
