@@ -53,7 +53,7 @@ func (h *Handler) InitRouters() *gin.Engine {
 	api := router.Group("/api")
 	api.POST("/create", h.CreateShortLink)
 	api.POST("/sing-up", h.RegisterUser)
-	api.POST("/singin", h.GetUser)
+	api.POST("/sing-in", h.GetUser)
 
 	
 

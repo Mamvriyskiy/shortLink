@@ -13,27 +13,25 @@ type User struct {
 }
 
 func (h *Handler) RegisterUser(*gin.Context) {
-	password := "abcd"
-	email := "asdf@mail.ru"
-	login := "Mamre32"
-	
-	user := structure.User{
-		Login: login,
-		Password: password,
-		Email: email,
+	var user User
+	if err := c.BindJSON(&user); err != nil {
+		//TODO: logger
+		return
 	}
 
 	fmt.Println(user)
 	userID, err := h.services.CreateUser(user)
-	_ = userID
-	_ = err
+	fmt.Println(userID, err)
 
 	return 
 }
 
 func (h *Handler) GetUser(*gin.Context) {
-	email := "asdf@mail.ru"
-	password := "abcd"
+	var user User
+	if err := c.BindJSON(&user); err != nil {
+		//TODO: logger
+		return
+	}
 
 	user := structure.User{
 		Password: password,
@@ -43,6 +41,6 @@ func (h *Handler) GetUser(*gin.Context) {
 	userID, err := h.services.GetUser(user)
 	_ = userID
 	_ = err
-	
+
 	return 
 }
