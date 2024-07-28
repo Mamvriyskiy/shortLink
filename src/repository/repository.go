@@ -13,6 +13,7 @@ type LinkRepository interface {
 
 type UserRepository interface {
 	CreateUser(user structure.User) (int, error)
+	GetUserByEmail(email string) (string, int, error)
 }
 
 type Repository struct {

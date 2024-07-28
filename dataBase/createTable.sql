@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS link(
-    linkID SERIAL, longLink varchar(255), shortLink varchar(255)
+    linkID SERIAL, longLink varchar(1000), shortLink varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS client(

@@ -3,17 +3,12 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
+	"net/http"
 	"fmt"
 )
 
-type User struct {
-	Login string `json:"login"`
-	Password string `json:"password"`
-	Email string `json:"email"`
-}
-
-func (h *Handler) RegisterUser(*gin.Context) {
-	var user User
+func (h *Handler) RegisterUser(c *gin.Context) {
+	var user structure.User
 	if err := c.BindJSON(&user); err != nil {
 		//TODO: logger
 		return
@@ -23,24 +18,36 @@ func (h *Handler) RegisterUser(*gin.Context) {
 	userID, err := h.services.CreateUser(user)
 	fmt.Println(userID, err)
 
+	c.JSON(http.StatusOK, map[string]interface{}{})
+
 	return 
 }
 
-func (h *Handler) GetUser(*gin.Context) {
-	var user User
+func (h *Handler) GetUser(c *gin.Context) {
+	var user structure.User
 	if err := c.BindJSON(&user); err != nil {
+		fmt.Println(err)
 		//TODO: logger
 		return
 	}
 
-	user := structure.User{
-		Password: password,
-		Email: email,
+	fmt.Println(user)
+	userID, err := h.services.GetUser(user)
+	//TODO: user no search
+	if err != nil {
+		return 
 	}
 
-	userID, err := h.services.GetUser(user)
-	_ = userID
-	_ = err
+	fmt.Println(userID)
+
+	token, err := h.services.CreateToken(userID)
+	if err != nil {
+		return 
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 
 	return 
 }

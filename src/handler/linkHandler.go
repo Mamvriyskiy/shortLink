@@ -5,7 +5,7 @@ import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
 	"net/http"
-	"fmt"
+	//"fmt"
 )
 
 func (h *Handler) GetLongLink(shortLink string) (string, error) {
@@ -13,6 +13,12 @@ func (h *Handler) GetLongLink(shortLink string) (string, error) {
 }
 
 func (h *Handler) CreateShortLink(c *gin.Context) {
+	clientID, ok := c.Get("userId")
+	if !ok {
+		logger.Log("Warning", "Get", "Error get userID from context", nil, "userId")
+		return
+	}
+
 	var link structure.Link
 
 	if err := c.BindJSON(&link); err != nil {
@@ -20,7 +26,6 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 		return
 	}
 
-	var result string
 	for true {
 		result, err := h.services.CreateShortLink(link)
 		if err != nil {
@@ -39,17 +44,20 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 		}
 	}
 
-	result = "https://localhost:8000/" + result
-	//TODO: clinetID
-	linkID, err := h.services.AddLink(link, 1)
+	var intVal float64
+	if val, ok := clientID.(float64); ok {
+		intVal = val
+	} else {
+		logger.Log("Error", "userID.(float64)", "Error:", nil, "")
+	}
+
+	_, err := h.services.AddLink(link, int(intVal))
 	if err != nil {
 		logger.Log("Error", " h.services.AddLink(link, 1)", "Error addlink:", err, link.ShortLink, link.LongLink)
 	}
 
-	fmt.Println(link, linkID)
-
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"shortlink": result,
+		"shortlink": "https://localhost:8000/" + link.ShortLink,
 	})
 
 	return

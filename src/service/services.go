@@ -15,6 +15,8 @@ type LinkServices interface {
 
 type UserServices interface {
 	CreateUser(user structure.User) (int, error)
+	CreateToken(userID int) (string, error)
+	GetUser(user structure.User) (int, error)
 }
 
 

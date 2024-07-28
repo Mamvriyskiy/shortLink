@@ -28,17 +28,25 @@ func (l *LinkPostgres) GetLongLink(shortLink string) (string, error) {
 	return longLink, err
 }
 
-func (l *LinkPostgres) AddLink(link structure.Link, userID int) (int, error) {
-	var id int
+func (l *LinkPostgres) AddLink(link structure.Link, clientID int) (int, error) {
+	var linkID int
 	query := fmt.Sprintf("INSERT INTO %s (shortlink, longlink) values ($1, $2) RETURNING linkID", "link")
 	row := l.db.QueryRow(query, link.ShortLink, link.LongLink)
-	if err := row.Scan(&id); err != nil {
+	if err := row.Scan(&linkID); err != nil {
 		fmt.Println(err)
 		//logger.Log("Error", "Scan", "Error insert into link:", err, userID, link)
 		return 0, err
 	}
 
-	return 1, nil
+	query = fmt.Sprintf("INSERT INTO clientlink (linkID, clientID) values ($1, $2)")
+	_, err := l.db.Exec(query, linkID, clientID)
+	if err != nil {
+		logger.Log("Error", "Exec", "Error insert into historydevice:", err, linkID, clientID)
+		return 0, err
+	}
+
+
+	return linkID, nil
 }
 
 func (l *LinkPostgres) CheckDuplicateShortLink(link string) (bool, error) {

@@ -1,41 +1,126 @@
 <!DOCTYPE html>
 <html lang="ru">
-    <head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            color: #333;
+        }
 
-    </head>
-    <body>
-        <div>Hello world!</div>
-        <button id="createLink">Добавтить пользователя</button>
-        <script>
-            document.getElementById('createLink').addEventListener('click', function() {
-            const login = prompt('login:');
-            const mail = prompt('mail:');
-            const pswrd = prompt('pswrd:');
-            if (login && mail && pswrd) {
-                // jwt = localStorage.getItem('jwt');
-                // console.log('Token ' + jwt);
-                //'Authorization': 'Bearer ' + jwt
-                console.log(JSON.stringify({ login, mail, pswrd }))
-                fetch('/api/sing-up/', {
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff; /* Голубой цвет */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Темнее при наведении */
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .href-class {
+            margin-top: 20px;
+
+        }
+
+        .href-class a {
+            margin-top: 20px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Авторизация</h1>
+        <div id="error-message" class="error"></div> 
+        <input type="text" id="email" placeholder="Почта">
+        <input type="password" id="password" placeholder="Пароль">
+        <input type="text" id="login" placeholder="Логин">
+        <button id="login-button">Зарегистрироваться</button>
+        <div class="href-class">
+            <a href="http://localhost:8000/auth/sign-in">Войти в аккаунт</a>
+        </div>
+    </div>
+
+    <script>
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const loginInput = document.getElementById("login");
+        const loginButton = document.getElementById("login-button");
+        const errorMessage = document.getElementById("error-message");
+
+        loginButton.addEventListener("click", () => {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const login = loginInput.value;
+
+            if (email === "" || password === "" || login == "") {
+                errorMessage.textContent = "Пожалуйста, введите email и пароль.";
+                return;
+            }
+
+            console.log(JSON.stringify({ login, email, password }))
+                fetch('/auth/sing-up/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         //'Authorization': jwt
                     },
-                    body: JSON.stringify({ login: login, password: pswrd, email: mail })
+                    body: JSON.stringify({ login: login, password: password, email: email })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    alert(data.shortlink);
                     //document.getElementById('shortlink').innerText = data.shortlink;
-                    alert('Устройство успешно добавлено!');
+                    alert('Регистрация прошла успешно');
+                    window.location.href = '/auth/sign-in';
                 })
                 .catch(error => {
-                    alert('Ошибка добавления устройства: ' + error.message);
+                    alert('Ошибка в регистрации' + error.message);
                 });
-            }
-        });
-
-        </script>
-    </body>
+                errorMessage.textContent = "";
+            // window.location.href = "/welcome"; // Перенаправление
+            });
+    </script>
+</body>
 </html>
