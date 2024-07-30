@@ -20,9 +20,8 @@ func (l *LinkPostgres) GetLongLink(shortLink string) (string, error) {
 	query := fmt.Sprintf("select longlink from link where shortlink = $1")
 	err := l.db.Get(&longLink, query, shortLink)
 	if err != nil {
-		fmt.Println(err)
+		logger.Log("Error", " GetLongLink(shortLink string)", fmt.Sprintf("No search long link for %s", shortLink), err)
 		return "", err
-		//TODO: logger
 	}
 
 	return longLink, err
@@ -33,15 +32,14 @@ func (l *LinkPostgres) AddLink(link structure.Link, clientID int) (int, error) {
 	query := fmt.Sprintf("INSERT INTO %s (shortlink, longlink) values ($1, $2) RETURNING linkID", "link")
 	row := l.db.QueryRow(query, link.ShortLink, link.LongLink)
 	if err := row.Scan(&linkID); err != nil {
-		fmt.Println(err)
-		//logger.Log("Error", "Scan", "Error insert into link:", err, userID, link)
+		logger.Log("Error", "Scan", fmt.Sprintf("Error insert into link: %s, clinetID %s", link, clientID), err)
 		return 0, err
 	}
 
 	query = fmt.Sprintf("INSERT INTO clientlink (linkID, clientID) values ($1, $2)")
 	_, err := l.db.Exec(query, linkID, clientID)
 	if err != nil {
-		logger.Log("Error", "Exec", "Error insert into historydevice:", err, linkID, clientID)
+		logger.Log("Error", "Exec", fmt.Sprintf("Error insert into historydevice: %s, clinetID %s", link, clientID), err)
 		return 0, err
 	}
 
@@ -55,7 +53,7 @@ func (l *LinkPostgres) CheckDuplicateShortLink(link string) (bool, error) {
 
 	err := l.db.Get(&flag, query, link)
 	if err != nil {
-		logger.Log("Error", "l.db.Get(&flag, query, link)", "Error get duplicatelink:", err)
+		logger.Log("Error", "Get", fmt.Sprintf("rror get duplicatelink %s", link), err)
 		return false, err
 	}
 

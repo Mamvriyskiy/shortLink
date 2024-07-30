@@ -3,62 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/signin.css">
     <title>Авторизация</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #007bff; /* Голубой цвет */
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3; /* Темнее при наведении */
-        }
-
-        .error {
-            color: red;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -69,42 +15,6 @@
         <button id="login-button">Войти</button>
     </div>
 
-    <script>
-        const emailInput = document.getElementById("email");
-        const passwordInput = document.getElementById("password");
-        const loginButton = document.getElementById("login-button");
-        const errorMessage = document.getElementById("error-message");
-
-        loginButton.addEventListener("click", () => {
-            const email = emailInput.value;
-            const password = passwordInput.value;
-
-            if (email === "" || password === "") {
-                errorMessage.textContent = "Пожалуйста, введите email и пароль.";
-                return;
-            }
-
-            fetch('/auth/sing-in/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.token) {
-                        localStorage.setItem('jwt', data.token);
-                        console.log('Authorization token:', data.token);
-                        window.location.href = '/app/create';
-                    } else {
-                        alert('Login failed');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-                errorMessage.textContent = "";
-            // window.location.href = "/welcome"; // Перенаправление
-            });
-    </script>
+    <script src=../script/signin.js></script>
 </body>
 </html>

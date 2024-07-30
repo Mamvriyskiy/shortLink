@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
 	"github.com/jmoiron/sqlx"
 	"fmt"
 )
@@ -15,16 +16,13 @@ func NewUserPostgres(db *sqlx.DB) *UserPostgres {
 }
 
 func (r *UserPostgres) CreateUser(user structure.User) (int, error) {
-	fmt.Println(user)
 	var userID int
 	query := fmt.Sprintf("INSERT into client (name, password, email) values ($1, $2, $3) RETURNING clientID")
 	row := r.db.QueryRow(query, user.Login, user.Password, user.Email)
 	if err := row.Scan(&userID); err != nil {
-		fmt.Println(err)
-		//logger.Log("Error", "Scan", "Error insert into client:", err, ownerID, h)
+		logger.Log("Error", "Scan", "Error insert into client:", err)
 		return 0, err
 	}
-	//insert into client (name, password, email) values ('123', '123', '123');
 
 	return userID, nil
 }
@@ -40,9 +38,8 @@ func (r *UserPostgres) GetUserByEmail(email string) (string, int, error) {
 	query := fmt.Sprintf("select clientid, password from client where email = $1")
 	err := r.db.Get(&user, query, email)
 	if err != nil {
-		fmt.Println(err)
+		logger.Log("Error", "Get", fmt.Sprintf("Error get user by email: %s", email), err)
 		return "", 0, err
-		//TODO: logger
 	}
 
 	return user.Password, user.ClientID, nil

@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/repository"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
 	"crypto/sha256"
 	"encoding/hex"
 	"time"
@@ -32,7 +33,6 @@ func generatePasswordHash(password string) string {
 
 func (s *UserService) CreateUser(user structure.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
-	fmt.Println(user)
 	return s.repository.CreateUser(user)
 }
 
@@ -56,15 +56,15 @@ func (s *UserService) CreateToken(userID int) (string, error) {
 func (s *UserService) GetUser(user structure.User) (int, error) {
 	password := generatePasswordHash(user.Password)
 	checkPassword, userID, err := s.repository.GetUserByEmail(user.Email)
-	fmt.Println(checkPassword, userID)
 	if err != nil {
-		//TODO: error sql request
+		logger.Log("Error", "GetUserByEmail(user.Email)", fmt.Sprintf("Error get user by email: %s", user.Email), err)
+		return 0, err
 	}
 
 	if checkPassword == password && userID != 0 {
 		return userID, nil
 	}
 
-	//TODO: error invalid user
+	logger.Log("Error", "Wrong password", fmt.Sprintf("Wrong password: %s", user.Email), err)
 	return 0, nil
 }

@@ -19,7 +19,6 @@ type UserServices interface {
 	GetUser(user structure.User) (int, error)
 }
 
-
 type Services struct {
 	LinkServices
 	UserServices

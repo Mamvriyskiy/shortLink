@@ -4,8 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/structure"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
+	"github.com/spf13/viper"
 	"net/http"
-	//"fmt"
+	"fmt"
 )
 
 func (h *Handler) GetLongLink(shortLink string) (string, error) {
@@ -44,6 +45,8 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 		}
 	}
 
+	logger.Log("Info", "", fmt.Sprintf("Create shortLink %s", link.ShortLink), nil, "")
+
 	var intVal float64
 	if val, ok := clientID.(float64); ok {
 		intVal = val
@@ -54,10 +57,13 @@ func (h *Handler) CreateShortLink(c *gin.Context) {
 	_, err := h.services.AddLink(link, int(intVal))
 	if err != nil {
 		logger.Log("Error", " h.services.AddLink(link, 1)", "Error addlink:", err, link.ShortLink, link.LongLink)
+		return
 	}
 
+	resultLink := fmt.Sprintf("https://localhost:%s/", viper.GetString("server.port")) + link.ShortLink
+	viper.GetString("server.port")
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"shortlink": "https://localhost:8000/" + link.ShortLink,
+		"shortlink": resultLink,
 	})
 
 	return

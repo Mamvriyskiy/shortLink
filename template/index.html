@@ -3,68 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/index.css">
     <title>Сокращатель ссылок</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-            margin-bottom: 20px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .short-link {
-            font-size: 18px;
-            font-weight: bold;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .short-link:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -74,58 +14,6 @@
         <div id="short-link-container"></div>
     </div>
 
-
-    <script>
-        const longUrlInput = document.getElementById("long-url");
-        const shortenButton = document.getElementById("shorten-button");
-        const shortLinkContainer = document.getElementById("short-link-container");
-
-        shortenButton.addEventListener("click", () => {
-            const longlink = longUrlInput.value;
-
-            jwt = localStorage.getItem('jwt');
-            if (jwt) {
-                console.log("Token:" + jwt)
-            } else {
-                console.log("Token:" + jwt)
-                alert('Пройдите регистрацию или войдите в аккаунт')
-                window.location.href = '/auth/sign-up';
-                return;
-            }
-
-            if (longlink === "") {
-                alert("Введите ссылку!");
-                return;
-            }
-
-            //'Authorization': 'Bearer ' + jwt
-            console.log(JSON.stringify({ longlink }))
-            fetch('/api/create/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': jwt
-                },
-                body: JSON.stringify({ longlink: longlink })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const shortURL = data.shortlink
-                //alert(data.shortlink);
-                //document.getElementById('shortlink').innerText = data.shortlink;
-                const shortLinkElement = document.createElement("a");
-                shortLinkElement.href = shortURL;
-                shortLinkElement.textContent = shortURL;
-                shortLinkElement.classList.add("short-link");
-                shortLinkContainer.innerHTML = ""; // Очистка предыдущего результата
-                shortLinkContainer.appendChild(shortLinkElement);
-            })
-            .catch(error => {
-                alert('Ошибка создания короткой ссылки: ' + error.message);
-            });
-
-            //const shortUrl = "https://your-short-link.com/short-link"; // Замените на реальную короткую ссылку
-        });
-    </script>
+    <script src=../script/index.js></script>
 </body>
 </html>

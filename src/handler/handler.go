@@ -83,15 +83,19 @@ func (h *Handler) InitRouters() *gin.Engine {
 	router := gin.New()
 
 	router.Use(AuthMiddleware())
-	router.Static("/css", "./template/css")
+
+	//router.Static("/css", "./template/css")
+	router.StaticFS("/css", http.Dir("./template/css"))
+
+	router.Static("/script", "./template/script")
+	
 	router.LoadHTMLGlob("template/*.html")
 
 	router.GET("/:path", func(c *gin.Context) {
 		currentURL := c.Param("path")
-		// fmt.Println(currentURL)
 		longLink, err := h.GetLongLink(currentURL)
 		if err != nil {
-			//TODO: error status
+			logger.Log("Error", "h.GetLongLink(currentURL)", "Error get long link for% ", nil, currentURL)
 			return
 		}
 		fmt.Println(longLink, currentURL, err)
