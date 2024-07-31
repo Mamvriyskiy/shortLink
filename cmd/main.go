@@ -5,10 +5,13 @@ import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/service"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/repository"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
+	"github.com/Mamvriyskiy/shortLink/tree/develop/database/migration"
+	//"github.com/golang-migrate/migrate"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src"
 	"github.com/spf13/viper"
 	"github.com/joho/godotenv"
 	"os"
+	"fmt"
 )
 
 func main() {
@@ -35,6 +38,13 @@ func main() {
 
 	if err != nil {
 		logger.Log("Error", "initCongig", "Error config DB:", err, "")
+		return
+	}
+
+	migraionConnect := fmt.Sprintf("postgres://Mamre32:Smena@localhost:5432/postgres?sslmode=disable") 
+	err = migration.Migration(migraionConnect)
+	if err != nil {
+		//TODO: error
 		return
 	}
 
