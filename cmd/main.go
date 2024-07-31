@@ -5,7 +5,7 @@ import (
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/service"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/repository"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src/logger"
-	"github.com/Mamvriyskiy/shortLink/tree/develop/database/migration"
+	migration "github.com/Mamvriyskiy/shortLink/tree/develop/database"
 	//"github.com/golang-migrate/migrate"
 	"github.com/Mamvriyskiy/shortLink/tree/develop/src"
 	"github.com/spf13/viper"

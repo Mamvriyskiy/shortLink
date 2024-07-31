@@ -22,42 +22,35 @@ import (
 
 const migrationsDir = "migrations"
 
-//go:embed *.sql
+//go:embed migrations/*.sql
 var MigrationsFS embed.FS
 
 func Migration(connectString string) error {
 	migrator := MustGetNewMigrator(MigrationsFS, migrationsDir)
 
-	// --- (2) ----
 	// Get the DB instance
 	conn, err := sql.Open("postgres", connectString)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-
 	defer conn.Close()
 
-	// --- (2) ----
-	// Apply migrations
 	err = migrator.ApplyMigrations(conn)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	fmt.Printf("Migrations applied!!")
+	//fmt.Printf("Migrations applied!!")
 
 	return err
 }
 
-// Migrator структура для применения миграций.
 type Migrator struct {
 	srcDriver source.Driver // Драйвер источника миграций.
 }
    
-   // MustGetNewMigrator создает новый экземпляр Migrator с встроенными SQL-файлами миграций.
-   // В случае ошибки вызывает panic.
 func MustGetNewMigrator(sqlFiles embed.FS, dirName string) *Migrator {
 	// Создаем новый драйвер источника миграций с встроенными SQL-файлами.
 	d, err := iofs.New(sqlFiles, dirName)
@@ -69,8 +62,7 @@ func MustGetNewMigrator(sqlFiles embed.FS, dirName string) *Migrator {
 	 	srcDriver: d,
 	}
 }
-   
-// ApplyMigrations применяет миграции к базе данных.
+
 func (m *Migrator) ApplyMigrations(db *sql.DB) error {
 	// Создаем экземпляр драйвера базы данных для PostgreSQL.
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
